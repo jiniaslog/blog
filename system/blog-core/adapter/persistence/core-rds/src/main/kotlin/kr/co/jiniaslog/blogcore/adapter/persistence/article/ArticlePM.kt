@@ -1,15 +1,23 @@
 package kr.co.jiniaslog.blogcore.adapter.persistence.article
 
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.Id
+import jakarta.persistence.NamedAttributeNode
+import jakarta.persistence.NamedEntityGraph
+import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import kr.co.jiniaslog.shared.persistence.BasePersistenceModel
+import org.hibernate.annotations.OnDelete
+import org.hibernate.annotations.OnDeleteAction
 import java.time.LocalDateTime
 
 @Entity
-@Table(
-    name = "articles",
+@Table(name = "articles")
+@NamedEntityGraph(
+    name = "article-with-taggings",
+    attributeNodes = [NamedAttributeNode("taggings")],
 )
 class ArticlePM(
     @Id
@@ -33,6 +41,10 @@ class ArticlePM(
 
     @Column(nullable = false, name = "category_id")
     var categoryId: Long,
+
+    @OneToMany(mappedBy = "articleId", cascade = [CascadeType.ALL], orphanRemoval = true)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    val taggings: MutableSet<TaggingPM> = mutableSetOf(),
 
     createdDate: LocalDateTime? = null,
 

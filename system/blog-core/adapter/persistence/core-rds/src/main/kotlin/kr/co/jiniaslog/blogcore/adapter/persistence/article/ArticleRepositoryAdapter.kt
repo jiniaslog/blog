@@ -16,11 +16,10 @@ import kotlin.jvm.optionals.getOrNull
 @Repository
 class ArticleRepositoryAdapter(
     private val jpaArticleRepository: JpaArticleRepository,
-    private val articleMapper: ArticlePmMapper,
     private val idGenerator: IdGenerator,
 ) : ArticleRepository, ArticleIdGenerator {
     override fun save(newArticle: Article) {
-        val articlePM = articleMapper.toPm(newArticle).apply {
+        val articlePM = newArticle.toPm().apply {
             newFlag = true
         }
         jpaArticleRepository.save(articlePM)
@@ -31,13 +30,27 @@ class ArticleRepositoryAdapter(
     }
 
     override fun update(article: Article) {
-        val articlePM = articleMapper.toPm(article).apply {
-            newFlag = false
+        val toBeUpdated = jpaArticleRepository.findById(articleId = article.id.value)
+            .getOrElse { throw ResourceNotFoundException("${article.id} is not found") }
+        toBeUpdated.apply {
+            title = article.title
+            content = article.content
+            hit = article.hit
+            thumbnailUrl = article.thumbnailUrl
+            writerId = article.writerId.value
+            categoryId = article.categoryId.value
+            taggings.clear()
+            taggings.addAll(
+                article.tags.map {
+                    TaggingPM(id = idGenerator.generate(), articleId = article.id.value, tagId = it.value)
+                        .apply { newFlag = true }
+                },
+            )
         }
-        jpaArticleRepository.save(articlePM)
+        jpaArticleRepository.save(toBeUpdated)
         article.syncAuditAfterPersist(
-            articlePM.createdDate!!,
-            articlePM.updatedDate!!,
+            toBeUpdated.createdDate!!,
+            toBeUpdated.updatedDate!!,
         )
     }
 
@@ -67,9 +80,24 @@ class ArticleRepositoryAdapter(
             thumbnailUrl = thumbnailUrl,
             writerId = UserId(writerId),
             categoryId = CategoryId(categoryId),
-            tags = setOf(TagId(1L)), // fixme: 더미로 넣음, 수정필요
+            tags = taggings.map { TagId(it.tagId) }.toSet(),
             createdAt = createdDate,
             updatedAt = updatedDate,
         )
     }
+
+    private fun Article.toPm(): ArticlePM =
+        ArticlePM(
+            id = id.value,
+            title = title,
+            content = content,
+            hit = hit,
+            thumbnailUrl = thumbnailUrl,
+            writerId = writerId.value,
+            categoryId = categoryId.value,
+            taggings = tags.map { TaggingPM(id = idGenerator.generate(), articleId = id.value, tagId = it.value) }
+                .toMutableSet(),
+            createdDate = createdDate,
+            updatedDate = updatedDate,
+        )
 }
