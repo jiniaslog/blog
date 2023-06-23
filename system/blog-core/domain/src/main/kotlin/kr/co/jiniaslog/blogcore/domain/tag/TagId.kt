@@ -1,2 +1,5 @@
 package kr.co.jiniaslog.blogcore.domain.tag
-data class TagId(val value: Long)
+
+import kr.co.jiniaslog.shared.core.domain.ValueObject
+
+data class TagId(val value: Long) : ValueObject

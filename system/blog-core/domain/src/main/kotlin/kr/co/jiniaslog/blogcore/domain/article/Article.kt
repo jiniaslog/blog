@@ -77,11 +77,11 @@ class Article private constructor(
             categoryId: CategoryId,
             tags: Set<TagId>,
         ) {
-            if (id == ArticleId(0)) throw ArticleNotValidException("shouldHaveId")
-            if (writerId == UserId(0)) throw ArticleNotValidException("shouldHaveWriter")
+            if (id.value < 1) throw ArticleNotValidException("shouldHaveId")
+            if (writerId.value < 1) throw ArticleNotValidException("shouldHaveWriter")
             if (title.isBlank()) throw ArticleNotValidException("shouldHaveTitle")
             if (content.isBlank()) throw ArticleNotValidException("shouldHaveContent")
-            if (categoryId == CategoryId(0)) throw ArticleNotValidException("shouldHaveCategory")
+            if (categoryId.value < 1) throw ArticleNotValidException("shouldHaveCategory")
             if (tags.isEmpty()) throw ArticleNotValidException("shouldHaveTags")
             if (thumbnailUrl.isBlank()) throw ArticleNotValidException("shouldHaveThumbnail")
         }
