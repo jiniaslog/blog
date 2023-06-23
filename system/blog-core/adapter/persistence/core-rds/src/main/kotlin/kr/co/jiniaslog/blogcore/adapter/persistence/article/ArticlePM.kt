@@ -43,7 +43,6 @@ class ArticlePM(
     var categoryId: Long,
 
     @OneToMany(mappedBy = "articleId", cascade = [CascadeType.ALL], orphanRemoval = true)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     val taggings: MutableSet<TaggingPM> = mutableSetOf(),
 
     createdDate: LocalDateTime? = null,
