@@ -9,8 +9,6 @@ import jakarta.persistence.NamedEntityGraph
 import jakarta.persistence.OneToMany
 import jakarta.persistence.Table
 import kr.co.jiniaslog.shared.persistence.BasePersistenceModel
-import org.hibernate.annotations.OnDelete
-import org.hibernate.annotations.OnDeleteAction
 import java.time.LocalDateTime
 
 @Entity
