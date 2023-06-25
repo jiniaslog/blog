@@ -13,7 +13,7 @@ interface CategoryCommands {
     data class CategoryData(
         val id: CategoryId?,
         val label: String,
-        val parentId: CategoryId?,
+        val parentLabel: String?,
         val order: Int,
     ) {
         val isNew: Boolean

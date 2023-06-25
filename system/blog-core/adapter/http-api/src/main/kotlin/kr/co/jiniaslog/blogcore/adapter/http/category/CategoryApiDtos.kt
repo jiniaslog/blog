@@ -17,14 +17,14 @@ data class CategoryApiData(
     val id: Long?,
     val label: String,
     val order: Int,
-    val parentId: Long?,
+    val parentLabel: String?,
 ) {
     fun toVo(): CategoryCommands.CategoryData {
         return CategoryCommands.CategoryData(
             id = id?.let { CategoryId(it) },
             label = label,
             order = order,
-            parentId = parentId?.let { CategoryId(it) },
+            parentLabel = parentLabel,
         )
     }
 }

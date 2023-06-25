@@ -15,7 +15,6 @@ import kr.co.jiniaslog.blogcore.domain.user.UserServiceClient
 import kr.co.jiniaslog.shared.core.context.UseCaseInteractor
 import kr.co.jiniaslog.shared.core.domain.ResourceConflictException
 import kr.co.jiniaslog.shared.core.domain.ResourceNotFoundException
-import kr.co.jiniaslog.shared.core.extentions.isNull
 
 @UseCaseInteractor
 internal class ArticleUseCaseInteractor(
@@ -38,8 +37,7 @@ internal class ArticleUseCaseInteractor(
 
     private fun PostArticleCommand.isValid() {
         if (userServiceClient.doesUserExist(writerId).not()) throw ResourceNotFoundException("User does not exist.")
-        val category = categoryQueries.findCategory(categoryId)
-        if (category.isNull()) throw ResourceNotFoundException("Category does not exist.")
+        val category = categoryQueries.findCategory(categoryId) ?: throw ResourceNotFoundException("Category does not exist.")
         if (category.isRoot) throw ResourceConflictException("Root category cannot be used for article")
     }
 
@@ -74,8 +72,7 @@ internal class ArticleUseCaseInteractor(
 
     private fun EditArticleCommand.isValid() {
         if (userServiceClient.doesUserExist(writerId).not()) throw ResourceNotFoundException("User does not exist.")
-        val category = categoryQueries.findCategory(categoryId)
-        if (category.isNull()) throw ResourceNotFoundException("Category does not exist.")
+        val category = categoryQueries.findCategory(categoryId) ?: throw ResourceNotFoundException("Category does not exist.")
         if (category.isRoot) throw ResourceConflictException("Root category cannot be used for article")
     }
 

@@ -63,31 +63,31 @@ class CategoryIntegrationTests : TestContainerConfig() {
         "id": 1,
         "label": "상위 카테고리 1",
         "order": 1,
-        "parentId": null
+        "parentLabel": null
         },
         {
         "id": 2,
         "label": "상위 카테고리 2",
         "order": 2,
-        "parentId": null
+        "parentLabel": null
         },
         {
         "id": null,
         "label": "하위 신규 카테고리 1",
         "order": 1,
-        "parentId": 1
+        "parentLabel": "상위 카테고리 1"
         },
         {
         "id": null,
         "label": "하위 신규 카테고리 2",
         "order": 2,
-        "parentId": 1
+        "parentLabel": "상위 카테고리 1"
         },
 {
         "id": 3,
         "label": "하위 기존 카테고리 1",
         "order": 1,
-        "parentId": 2
+        "parentLabel": "상위 카테고리 2"
         }
     ]
 }

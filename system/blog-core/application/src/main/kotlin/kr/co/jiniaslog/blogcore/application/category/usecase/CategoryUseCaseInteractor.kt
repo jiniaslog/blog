@@ -19,48 +19,78 @@ class CategoryUseCaseInteractor(
 ) : CategoryCommands, CategoryQueries {
     override fun syncCategories(command: SyncCategoryCommand) = with(command) {
         command.validate()
+        val existingCategoriesMap = categoryRepository.findAll().associateBy { it.label }.toMutableMap()
         val (newCategoriesData, toBeUpdatedCategoriesData) = categoriesData.partition { it.isNew }
-        val existingCategories = categoryRepository.findAll()
         val toBeUpdatedCategoriesAndData = toBeUpdatedCategoriesData.map { data ->
-            val category = existingCategories.find { it.id == data.id }
-                ?: throw ResourceNotFoundException("category ${data.id} not found")
+            val category = existingCategoriesMap[data.label] ?: throw ResourceNotFoundException("category ${data.id} not found")
             data to category
         }
-        val toBeDeletedCategories = existingCategories.filter { existingCategory ->
-            categoriesData.notContains(existingCategory.id)
-        }
+        val toBeDeletedCategories = existingCategoriesMap.filter { existingCategory ->
+            categoriesData.notContains(existingCategory.value.id)
+        }.map { it.value }
 
         transactionHandler.runInReadCommittedTransaction {
-            save(newCategoriesData)
-            update(toBeUpdatedCategoriesAndData)
+            save(newCategoriesData, existingCategoriesMap)
+            update(toBeUpdatedCategoriesAndData, existingCategoriesMap)
             delete(toBeDeletedCategories)
         }
     }
 
     private fun SyncCategoryCommand.validate() {
-        val groupedByParent = categoriesData.groupBy { it.parentId }
+        val groupedByParent = categoriesData.groupBy { it.parentLabel }
         for (categories in groupedByParent.values) {
             if (categories.hasDuplicateOrder()) throw ValidationException("Order conflict")
         }
     }
+
+    private fun List<CategoryData>.notContains(id: CategoryId): Boolean =
+        this.none { categoryData -> categoryData.id == id }
 
     private fun List<CategoryData>.hasDuplicateOrder(): Boolean {
         val orders = this.map { it.order }
         return orders.size != orders.toSet().size
     }
 
-    private fun save(newCategoryVos: List<CategoryData>) {
-        newCategoryVos.forEach { categoryVo ->
-            val id = categoryIdGenerator.generate()
-            categoryRepository.save(categoryVo.toDomain(id))
+    private fun save(newCategoriesData: List<CategoryData>, existingCategories: MutableMap<String, Category>) {
+        val parentCategoriesData = newCategoriesData.filter { data -> data.parentLabel == null }
+        val childCategoriesData = newCategoriesData - parentCategoriesData
+
+        parentCategoriesData.forEach { data ->
+            val category = data.toDomain(parentId = null)
+            categoryRepository.save(category)
+            existingCategories[category.label] = category
+        }
+
+        childCategoriesData.forEach { data ->
+            val parent = existingCategories[data.parentLabel]
+                ?: throw ResourceNotFoundException("parent category ${data.parentLabel} not found")
+            val category = data.toDomain(parent.id)
+            categoryRepository.save(category)
+            existingCategories[category.label] = category
         }
     }
 
-    private fun update(toBeUpdatedCategoriesData: List<Pair<CategoryData, Category>>) {
+    private fun CategoryData.toDomain(parentId: CategoryId?): Category = Category.newOne(
+        id = categoryIdGenerator.generate(),
+        label = label,
+        parentId = parentId,
+        order = order,
+    )
+
+    private fun update(
+        toBeUpdatedCategoriesData: List<Pair<CategoryData, Category>>,
+        existingCategories: MutableMap<String, Category>,
+    ) {
         toBeUpdatedCategoriesData.forEach { (data, category) ->
+            val parent = if (data.parentLabel != null) {
+                existingCategories[data.parentLabel]
+                    ?: throw ResourceNotFoundException("parent category ${data.parentLabel} not found")
+            } else {
+                null
+            }
             category.update(
                 label = data.label,
-                parentId = data.parentId,
+                parentId = parent?.id,
                 order = data.order,
             )
             categoryRepository.update(category)
@@ -72,16 +102,6 @@ class CategoryUseCaseInteractor(
             categoryRepository.delete(categoryToDelete.id)
         }
     }
-
-    private fun CategoryData.toDomain(id: CategoryId): Category = Category.newOne(
-        id = id,
-        label = label,
-        parentId = parentId,
-        order = order,
-    )
-
-    private fun List<CategoryData>.notContains(id: CategoryId): Boolean =
-        this.none { categoryVo -> categoryVo.id == id }
 
     override fun findCategory(categoryId: CategoryId): Category? =
         categoryRepository.findById(categoryId)

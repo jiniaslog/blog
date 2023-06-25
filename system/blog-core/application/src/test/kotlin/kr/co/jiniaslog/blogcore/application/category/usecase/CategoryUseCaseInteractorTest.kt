@@ -61,28 +61,28 @@ class CategoryUseCaseInteractorTest : BehaviorSpec() {
                 val dummy1Data = CategoryCommands.CategoryData(
                     id = dummy1.id,
                     label = dummy1.label,
-                    parentId = dummy1.parentId,
+                    parentLabel = dummy1.label,
                     order = dummy1.order,
                 )
 
                 val dummy2Data = CategoryCommands.CategoryData(
                     id = dummy2.id,
                     label = dummy2.label,
-                    parentId = dummy2.parentId,
+                    parentLabel = dummy1.label,
                     order = dummy2.order,
                 )
 
                 val dummy3Data = CategoryCommands.CategoryData(
                     id = dummy3.id,
                     label = dummy3.label,
-                    parentId = dummy3.parentId,
+                    parentLabel = dummy1.label,
                     order = dummy3.order,
                 )
 
                 val newData = CategoryCommands.CategoryData(
                     id = null,
                     label = "newOne",
-                    parentId = null,
+                    parentLabel = null,
                     order = 2,
                 )
 
