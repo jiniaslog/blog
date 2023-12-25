@@ -27,30 +27,27 @@ internal class MemoUseCaseTests : CustomBehaviorSpec() {
         /**
          * I Init Memo
          */
-        Given("유효한 메모 초기화 요청이 있고") {
-            val command =
-                IInitMemo.Command(
-                    content = MemoContent("content"),
-                    authorId = AuthorId(1),
-                    title = MemoTitle("title"),
-                )
-            When("메모 초기화를 하면") {
+        Given("새 메모 작성을 위한 유효한 입력값이 주어지고") {
+            val command = prepareValidMemoInitializationCommand()
+            When("새 메모를 초기화하는 요청을 처리하면") {
                 val info = sut.handle(command)
-                Then("메모가 초기화된다.") {
+                Then("새로운 메모가 정상적으로 생성되어야 한다.") {
                     info.id shouldNotBe null
-                    memoRepository.findById(info.id) shouldNotBe null
+                    val retrievedMemo = memoRepository.findById(info.id) shouldNotBe null
+                    retrievedMemo!!.id shouldBe info.id
                 }
             }
         }
-        Given("메모 초기화 요청이 제목만 주어지고") {
+
+        Given("새 메모 작성을 위한 입력값이 제목만 주어지고") {
             val command =
                 IInitMemo.Command(
                     authorId = AuthorId(1),
                     title = MemoTitle("title"),
                 )
-            When("메모 초기화를 하면") {
+            When("새 메모를 초기화하는 요청을 처리하면") {
                 val info = sut.handle(command)
-                Then("메모가 초기화된다.") {
+                Then("새로운 메모가 정상적으로 생성되어야 한다.") {
                     info.id shouldNotBe null
                     memoRepository.findById(info.id) shouldNotBe null
                 }
@@ -221,4 +218,11 @@ internal class MemoUseCaseTests : CustomBehaviorSpec() {
             }
         }
     }
+
+    private fun prepareValidMemoInitializationCommand() =
+        IInitMemo.Command(
+            content = MemoContent("content"),
+            authorId = AuthorId(1),
+            title = MemoTitle("title"),
+        )
 }
