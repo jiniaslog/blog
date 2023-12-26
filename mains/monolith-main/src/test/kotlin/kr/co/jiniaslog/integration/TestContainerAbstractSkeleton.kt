@@ -1,7 +1,10 @@
 package kr.co.jiniaslog.integration
 
 import io.restassured.RestAssured
+import kr.co.jiniaslog.memo.Neo4jDbCleaner
+import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.BeforeEach
+import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.boot.test.web.server.LocalServerPort
 import org.springframework.test.context.ActiveProfiles
@@ -18,9 +21,17 @@ abstract class TestContainerAbstractSkeleton {
     @LocalServerPort
     protected var port: Int = 0
 
+    @Autowired
+    protected lateinit var neo4jDbCleaner: Neo4jDbCleaner
+
     @BeforeEach
     fun setUp() {
         RestAssured.port = port
+    }
+
+    @AfterEach
+    fun tearDown() {
+        neo4jDbCleaner.tearDown()
     }
 
     companion object {

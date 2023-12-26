@@ -9,4 +9,5 @@ dependencies {
     implementation(project(Modules.Libs.CoreKernel.path))
     implementation(project(Modules.Service.Memo.ReadOnly.path))
     implementation("org.springframework.boot:spring-boot-starter-data-neo4j")
+    testFixturesApi("org.springframework.boot:spring-boot-starter-data-neo4j")
 }

@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional
 import kotlin.jvm.optionals.getOrNull
 
 @PersistenceAdapter
-open class MemoRepositoryAdapter(
+internal open class MemoRepositoryAdapter(
     private val memoNeo4jRepository: MemoNeo4jRepository,
     private val folderNeo4jRepository: FolderNeo4jRepository,
 ) : MemoRepository {

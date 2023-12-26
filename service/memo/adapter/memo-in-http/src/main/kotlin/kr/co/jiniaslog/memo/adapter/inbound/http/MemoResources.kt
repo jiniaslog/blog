@@ -14,6 +14,7 @@ import kr.co.jiniaslog.memo.usecase.IInitMemo
 import kr.co.jiniaslog.memo.usecase.IMakeRelationShipFolderAndMemo
 import kr.co.jiniaslog.memo.usecase.IUpdateMemo
 import kr.co.jiniaslog.memo.usecase.UseCasesMemoFacade
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
@@ -24,12 +25,13 @@ import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+import java.net.URI
 
 private val log = mu.KotlinLogging.logger { }
 
 @RestController
 @RequestMapping("/api/v1/memos")
-class MemoController(
+class MemoResources(
     private val memoUseCases: UseCasesMemoFacade,
     private val memoQueries: QueriesMemoFacade,
 ) {
@@ -37,12 +39,14 @@ class MemoController(
     @CrossOrigin(origins = ["http://localhost:3000"])
     fun initMemo(
         @RequestBody request: InitMemoRequest,
-    ): InitMemoResponse {
+    ): ResponseEntity<InitMemoResponse> {
         val info =
             memoUseCases.handle(
                 IInitMemo.Command(authorId = AuthorId(request.authorId)),
             )
-        return InitMemoResponse(info.id.value)
+        return ResponseEntity
+            .created(URI("/api/v1/memos/${info.id.value}"))
+            .body(InitMemoResponse(info.id.value))
     }
 
     @GetMapping
@@ -73,9 +77,11 @@ class MemoController(
     @CrossOrigin(origins = ["http://localhost:3000"])
     fun deleteMemoById(
         @PathVariable id: Long,
-    ): DeleteMemoByIdResponse {
+    ): ResponseEntity<Unit> {
         memoUseCases.handle(IDeleteMemo.Command(MemoId(id)))
-        return DeleteMemoByIdResponse()
+        return ResponseEntity
+            .status(204)
+            .build()
     }
 
     @PutMapping("/{id}/folders/{folderId}")
@@ -129,14 +135,16 @@ class MemoController(
     fun deleteReference(
         @PathVariable id: Long,
         @PathVariable referenceId: Long,
-    ): DeleteReferenceResponse {
+    ): ResponseEntity<Unit> {
         memoUseCases.handle(
             IUpdateMemo.Command.RemoveReference(
                 memoId = MemoId(id),
                 referenceId = MemoId(referenceId),
             ),
         )
-        return DeleteReferenceResponse()
+        return ResponseEntity
+            .status(204)
+            .build()
     }
 }
 

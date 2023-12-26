@@ -17,7 +17,7 @@ import org.springframework.data.neo4j.core.schema.Relationship
 import java.time.LocalDateTime
 
 @Node("memo")
-class MemoNeo4jEntity(
+internal class MemoNeo4jEntity(
     @Id
     override val id: Long,
     @Property("authorId")

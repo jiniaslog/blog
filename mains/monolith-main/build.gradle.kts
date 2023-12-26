@@ -41,7 +41,7 @@ val integrationTest = mutableListOf(
     "org.testcontainers:junit-jupiter:1.19.3",
     "org.testcontainers:neo4j:1.19.3",
     "io.kotest.extensions:kotest-extensions-testcontainers:2.0.2",
-    "io.rest-assured:rest-assured:5.4.0"
+    "io.rest-assured:rest-assured:5.4.0",
 )
 
 dependencies {
@@ -51,6 +51,7 @@ dependencies {
     integrationTest.forEach {
         testImplementation(it)
     }
+    testImplementation(testFixtures(project(Modules.Service.Memo.Adaptors.Persistence.path)))
 }
 
 tasks.register("testAll") {

@@ -4,7 +4,7 @@ import org.springframework.data.neo4j.repository.Neo4jRepository
 import org.springframework.data.neo4j.repository.query.Query
 import org.springframework.data.repository.query.Param
 
-interface FolderNeo4jRepository : Neo4jRepository<FolderNeo4jEntity, Long> {
+internal interface FolderNeo4jRepository : Neo4jRepository<FolderNeo4jEntity, Long> {
     @Query(
         """
         MATCH (parentFolder:folder { id: ${'$'}folderId })

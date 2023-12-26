@@ -58,10 +58,6 @@ fun IGetMemoById.Info.toResponse(): GetMemoByIdResponse {
     )
 }
 
-data class DeleteMemoByIdResponse(
-    val success: Boolean = true,
-)
-
 data class InitMemoRequest(
     val authorId: Long,
 )
@@ -121,7 +117,3 @@ fun IUpdateMemo.Info.toResponse(): AddReferenceResponse {
         memoId = this.id.value,
     )
 }
-
-data class DeleteReferenceResponse(
-    val success: Boolean = true,
-)

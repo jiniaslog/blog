@@ -21,7 +21,7 @@ private val log = mu.KotlinLogging.logger {}
 
 @RestController
 @RequestMapping("/api/v1/folders")
-class FolderController(
+class FolderResources(
     private val folderUseCases: UseCasesFolderFacade,
     private val folderQueries: QueriesFolderFacade,
 ) {

@@ -4,7 +4,7 @@ import org.springframework.data.neo4j.repository.Neo4jRepository
 import org.springframework.data.neo4j.repository.query.Query
 import org.springframework.data.repository.query.Param
 
-interface MemoNeo4jRepository : Neo4jRepository<MemoNeo4jEntity, Long> {
+internal interface MemoNeo4jRepository : Neo4jRepository<MemoNeo4jEntity, Long> {
     @Query(
         """
         CALL db.index.fulltext.queryNodes("memo_full_text_index", ${'$'}keyword)

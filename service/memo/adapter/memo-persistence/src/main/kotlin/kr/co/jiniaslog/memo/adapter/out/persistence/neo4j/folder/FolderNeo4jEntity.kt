@@ -12,7 +12,7 @@ import org.springframework.data.neo4j.core.schema.Relationship
 import java.time.LocalDateTime
 
 @Node("folder")
-class FolderNeo4jEntity(
+internal class FolderNeo4jEntity(
     @Id
     override val id: Long,
     @Property("name")
