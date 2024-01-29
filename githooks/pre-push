@@ -1,0 +1,34 @@
+#!/bin/sh
+
+exec 1>&2
+
+# PROJECT/.git/hooks - 깃 훅 스크립트 경로
+BASE_DIR=$(dirname "$0")
+BASE_NAME=$(basename "$0")
+PROJECT_DIR="$BASE_DIR/../.."
+
+info() {
+  printf "[%-10s INFO] $1\n" "$BASE_NAME"
+}
+
+warn() {
+  printf "[%-10s WARN] $1\n" "$BASE_NAME"
+}
+
+err() {
+  printf "[%-10s ERROR] $1\n" "$BASE_NAME"
+}
+
+info "gradlew testAll 시작..."
+
+if [ ! -f "$PROJECT_DIR/gradlew" ]; then
+    err "프로젝트 루트에서 gradlew 를 찾을 수 없습니다."
+    exit 1
+fi
+
+"$PROJECT_DIR/gradlew" testAll || {
+    warn "gradlew testAll 실패"
+    exit 1
+}
+
+info "gradlew testAll 성공!"

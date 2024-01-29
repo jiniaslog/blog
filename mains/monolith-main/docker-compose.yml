@@ -1,0 +1,48 @@
+version: "3"
+services:
+  db_mysql_1:
+    ports:
+      - "3307:3306"
+    container_name: jinias_log_mysql_core
+    image: mysql:8.0.34
+    restart: always
+    networks:
+      - internal-network
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_USER: "user"
+      MYSQL_PASSWORD: "password"
+      MYSQL_DATABASE: "blog_core"
+    healthcheck:
+      test: "mysqladmin ping --silent"
+      interval: 1s
+      retries: 120
+
+  monolith-main:
+    ports:
+      - "7777:7777"
+      - "7778:7778"
+
+    environment:
+      JAVA_TOOL_OPTIONS: -Dcom.sun.management.jmxremote=true -Dcom.sun.management.jmxremote.port=7778 -Dcom.sun.management.jmxremote.rmi.port=7778 -Dcom.sun.management.jmxremote.authenticate=false -Dcom.sun.management.jmxremote.ssl=false -Djava.rmi.server.hostname=${HOST_IP:-$DEFAULT_IP} -Xms1G -Xmx1G
+      SPRING_APPLICATION_JSON: '{
+      }'
+    container_name: jinias_log_monolith_main
+    build:
+      dockerfile: Dockerfile
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      db_mysql_1:
+        condition: service_healthy
+    restart: always
+    networks:
+      - internal-network
+    deploy:
+      resources:
+        limits:
+          cpus: "1"
+
+networks:
+  internal-network:
+    driver: bridge

@@ -1,0 +1,36 @@
+#!/bin/sh
+
+exec 1>&2
+
+# PROJECT/.git/hooks - 깃 훅 스크립트 경로
+BASE_DIR=$(dirname "$0")
+BASE_NAME=$(basename "$0")
+PROJECT_DIR="$BASE_DIR/../.."
+
+info() {
+  printf "[%-10s INFO] $1\n" "$BASE_NAME"
+}
+
+warn() {
+  printf "[%-10s WARN] $1\n" "$BASE_NAME"
+}
+
+err() {
+  printf "[%-10s ERROR] $1\n" "$BASE_NAME"
+}
+
+info "gradlew lintKotlin 시작..."
+
+if [ ! -f "$PROJECT_DIR/gradlew" ]; then
+    err "프로젝트 루트에서 gradlew 를 찾을 수 없습니다."
+    exit 1
+fi
+
+"$PROJECT_DIR/gradlew" lintKotlin || {
+    warn "gradlew lintKotlin 실패, formatKotlin 을 실행합니다."
+    warn "formatKotlin 이 적용된 파일에 대해 다시 commit 이 필요합니다."
+    "$PROJECT_DIR/gradlew" formatKotlin
+    exit 1
+}
+
+info "gradlew lintKotlin 성공!"
