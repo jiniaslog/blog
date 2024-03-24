@@ -5,4 +5,5 @@ interface QueriesMemoFacade :
     IRecommendRelatedMemo,
     IGetMemoById,
     IGetAllReferencesByMemo,
-    IGetAllReferencedByMemo
+    IGetAllReferencedByMemo,
+    ICheckMemoExisted

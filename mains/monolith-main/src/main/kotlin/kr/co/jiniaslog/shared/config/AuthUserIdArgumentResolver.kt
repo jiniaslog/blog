@@ -1,7 +1,7 @@
 package kr.co.jiniaslog.shared.config
 
-import kr.co.jiniaslog.memo.adapter.inbound.http.AuthUserId
 import kr.co.jiniaslog.user.application.security.UserPrincipal
+import kr.cojiniaslog.shared.adapter.inbound.http.AuthUserId
 import org.springframework.core.MethodParameter
 import org.springframework.security.core.context.SecurityContextHolder
 import org.springframework.web.bind.support.WebDataBinderFactory

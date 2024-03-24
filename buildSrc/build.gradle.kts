@@ -17,4 +17,5 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-gradle-plugin:3.2.0")
     implementation("io.spring.gradle:dependency-management-plugin:1.1.4")
     implementation("org.jetbrains.kotlinx:kover-gradle-plugin:0.7.5")
+    implementation("org.jetbrains.kotlin.kapt:org.jetbrains.kotlin.kapt.gradle.plugin:1.9.23")
 }

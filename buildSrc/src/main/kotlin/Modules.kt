@@ -11,6 +11,7 @@ object Modules {
             val ReadOnly = Module(":service:memo:memo-queries")
 
             enum class Adaptors(val path: String) {
+                InAcl(":service:memo:adapter:memo-in-acl"),
                 InHttp(":service:memo:adapter:memo-in-http"),
                 InWebsocket(":service:memo:adapter:memo-in-websocket"),
                 Persistence(":service:memo:adapter:memo-out-persistence")
@@ -33,7 +34,8 @@ object Modules {
 
             enum class Adaptors(val path: String) {
                 InHttp(":service:blog:adapter:blog-in-http"),
-                Persistence(":service:blog:adapter:blog-persistence")
+                OutUser(":service:blog:adapter:blog-out-user"),
+                OutMemo(":service:blog:adapter:blog-out-memo")
                 ;
             }
         }
@@ -43,6 +45,7 @@ object Modules {
             val Application = Module(":service:user-auth:user-auth-application")
 
             enum class Adaptors(val path: String) {
+                InAcl(":service:user-auth:adapter:user-auth-in-acl"),
                 InHttp(":service:user-auth:adapter:user-auth-in-http"),
                 OutGoogle(":service:user-auth:adapter:user-auth-out-google"),
                 Persistence(":service:user-auth:adapter:user-auth-out-persistence"),
@@ -55,6 +58,7 @@ object Modules {
     }
 
     object Libs {
+        val RestKernel = Module(":libs:rest-kernel")
         val SnowflakeIdGenerator = Module(":libs:snowflake-id-generator")
         val GlobalLogging = Module(":libs:global-logging")
         val CoreKernel = Module(":libs:core-kernel")

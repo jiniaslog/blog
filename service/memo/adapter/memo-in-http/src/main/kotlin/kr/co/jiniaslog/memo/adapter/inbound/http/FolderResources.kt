@@ -8,6 +8,7 @@ import kr.co.jiniaslog.memo.usecase.ICreateNewFolder
 import kr.co.jiniaslog.memo.usecase.IDeleteFoldersRecursively
 import kr.co.jiniaslog.memo.usecase.IMakeRelationShipFolderAndFolder
 import kr.co.jiniaslog.memo.usecase.UseCasesFolderFacade
+import kr.cojiniaslog.shared.adapter.inbound.http.AuthUserId
 import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.CrossOrigin
 import org.springframework.web.bind.annotation.DeleteMapping

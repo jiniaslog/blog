@@ -54,17 +54,33 @@ abstract class TestContainerAbstractSkeleton {
                 .withCommand(RDB_CHARSET, RDB_COLLATION)
                 .withDatabaseName("user")
 
+        @Container
+        var blogDb: MySQLContainer<*> =
+            MySQLContainer("mysql:8.0")
+                .withCommand(RDB_CHARSET, RDB_COLLATION)
+                .withDatabaseName("blog")
+
         @DynamicPropertySource
         @JvmStatic
-        fun neo4jProperties(registry: DynamicPropertyRegistry) {
+        fun testProperty(registry: DynamicPropertyRegistry) {
+            // neo4j
             registry.add("spring.neo4j.uri") { neo4j.boltUrl }
             registry.add("spring.neo4j.authentication.username") { "neo4j" }
             registry.add("spring.neo4j.authentication.password") { "password" }
+
+            // user db
             registry.add("spring.datasource.user.jdbc-url") { userDb.jdbcUrl }
             registry.add("spring.datasource.user.username") { userDb.username }
             registry.add("spring.datasource.user.password") { userDb.password }
             registry.add("spring.datasource.user.driver-class-name") { userDb.driverClassName }
             registry.add("spring.datasource.user.connection-init-sql") { RDB_INIT_SQL }
+
+            // blog db
+            registry.add("spring.datasource.blog.jdbc-url") { blogDb.jdbcUrl }
+            registry.add("spring.datasource.blog.username") { blogDb.username }
+            registry.add("spring.datasource.blog.password") { blogDb.password }
+            registry.add("spring.datasource.blog.driver-class-name") { blogDb.driverClassName }
+            registry.add("spring.datasource.blog.connection-init-sql") { RDB_INIT_SQL }
         }
     }
 }

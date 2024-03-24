@@ -7,6 +7,7 @@ import kr.co.jiniaslog.user.application.infra.ProviderResolver
 import kr.co.jiniaslog.user.application.infra.TokenStore
 import kr.co.jiniaslog.user.application.infra.UserAuthTransactionHandler
 import kr.co.jiniaslog.user.application.infra.UserRepository
+import kr.co.jiniaslog.user.application.usecase.ICheckUserExisted
 import kr.co.jiniaslog.user.application.usecase.IGetOAuthRedirectionUrl
 import kr.co.jiniaslog.user.application.usecase.IRefreshToken
 import kr.co.jiniaslog.user.application.usecase.ISignInOAuthUser
@@ -107,6 +108,11 @@ class UserAuthService(
                 },
             )
         }
+
+    override fun handle(command: ICheckUserExisted.Command): Boolean {
+        val user = userRepository.findById(command.id)
+        return user != null
+    }
 
     private fun reTryGetAuthTokensInCache(
         refreshToken: RefreshToken,

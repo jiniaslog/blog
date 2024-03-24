@@ -14,6 +14,7 @@ include(
     "libs:core-kernel",
     "libs:messaging-handler-generator",
     "libs:rdb-kernel",
+    "libs:rest-kernel",
     "libs:messaging-kernel",
     "libs:global-logging",
     "libs:snowflake-id-generator",
@@ -23,12 +24,14 @@ include(
     "service:blog:adapter:blog-out-rdb",
     "service:blog:adapter:blog-in-http",
     "service:blog:adapter:blog-in-message",
-    "service:blog:adapter:blog-acl-user",
+    "service:blog:adapter:blog-out-user",
+    "service:blog:adapter:blog-out-memo",
 
     // memo
     "service:memo:memo-core",
     "service:memo:memo-queries",
     "service:memo:adapter:memo-in-http",
+    "service:memo:adapter:memo-in-acl",
     "service:memo:adapter:memo-in-websocket",
     "service:memo:adapter:memo-in-message",
     "service:memo:adapter:memo-in-batch",
@@ -43,12 +46,12 @@ include(
     "service:user-auth:user-auth-core",
     "service:user-auth:user-auth-application",
     "service:user-auth:adapter:user-auth-in-http",
+    "service:user-auth:adapter:user-auth-in-acl",
     "service:user-auth:adapter:user-auth-out-google",
     "service:user-auth:adapter:user-auth-out-persistence",
     "service:user-auth:adapter:user-auth-out-cache",
 
     "service:comment",
-    "service:media",
     "service:seo",
     "service:message-nexus",
 )

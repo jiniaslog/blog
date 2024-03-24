@@ -3,16 +3,15 @@ services:
   db_mysql_1:
     ports:
       - "3307:3306"
-    container_name: jinias_log_mysql_core
     image: mysql:8.0.34
     restart: always
     networks:
       - internal-network
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
-      MYSQL_USER: "user"
-      MYSQL_PASSWORD: "password"
-      MYSQL_DATABASE: "blog_core"
+      MYSQL_DATABASE: jiniaslog_blog
+    volumes:
+      - ./sql/initdb.d:/docker-entrypoint-initdb.d
     healthcheck:
       test: "mysqladmin ping --silent"
       interval: 1s

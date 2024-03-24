@@ -9,6 +9,7 @@ import kr.co.jiniaslog.memo.domain.folder.FolderName
 import kr.co.jiniaslog.memo.domain.memo.MemoContent
 import kr.co.jiniaslog.memo.domain.memo.MemoId
 import kr.co.jiniaslog.memo.domain.memo.MemoTitle
+import kr.co.jiniaslog.memo.queries.ICheckMemoExisted
 import kr.co.jiniaslog.memo.queries.IGetAllMemos
 import kr.co.jiniaslog.memo.queries.IGetAllReferencedByMemo
 import kr.co.jiniaslog.memo.queries.IGetAllReferencesByMemo
@@ -104,6 +105,10 @@ internal open class QueriesMemoFolderImpl(
                     )
                 }.toSet(),
         )
+    }
+
+    override fun handle(query: ICheckMemoExisted.Query): Boolean {
+        return memoNeo4jRepository.existsById(query.memoId.value)
     }
 
     override fun handle(query: IGetFoldersAll.Query): IGetFoldersAll.Info {

@@ -5,6 +5,7 @@ import com.github.tomakehurst.wiremock.client.WireMock
 import kr.co.jiniaslog.user.IGetOAuthRedirectionUrlTests
 import kr.co.jiniaslog.user.IRefreshTokenTests
 import kr.co.jiniaslog.user.ISignInOAuthUserTests
+import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Nested
 
@@ -67,6 +68,12 @@ abstract class UserUseCasesIntegrationTestsSuite : TestContainerAbstractSkeleton
 
                     start()
                 }
+        }
+
+        @JvmStatic
+        @AfterAll
+        fun tearDownWireMock() {
+            googleOauthStub.stop()
         }
     }
 }

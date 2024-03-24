@@ -18,6 +18,7 @@ object UserDb {
     const val BASE_PACKAGE = "kr.co.jiniaslog.user.adapter.out.mysql"
     const val DATASOURCE_PREFIX = "spring.datasource.user"
     const val ENTITY_MANAGER_FACTORY = "userEntityManagerFactory"
+    const val DATASOURCE = "userDatasource"
     const val PERSISTENT_UNIT = "userEntityManager"
     const val TRANSACTION_MANAGER = "userTransactionManager"
 }
@@ -37,9 +38,12 @@ class UserDatasourceConfig {
     }
 
     @Bean
-    fun userEntityManagerFactory(builder: EntityManagerFactoryBuilder): LocalContainerEntityManagerFactoryBean {
+    fun userEntityManagerFactory(
+        @Qualifier(UserDb.DATASOURCE) dataSource: DataSource,
+        builder: EntityManagerFactoryBuilder,
+    ): LocalContainerEntityManagerFactoryBean {
         return builder
-            .dataSource(userDatasource())
+            .dataSource(dataSource)
             .packages(UserDb.BASE_PACKAGE)
             .properties(mapOf("hibernate.hbm2ddl.auto" to "create-drop"))
             .build()

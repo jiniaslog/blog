@@ -10,5 +10,6 @@ dependencies {
     implementation(project(Modules.Service.Memo.Core.path))
     implementation(project(Modules.Service.Memo.ReadOnly.path))
     implementation(project(Modules.Libs.CoreKernel.path))
+    implementation(project(Modules.Libs.RestKernel.path))
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.3.0")
 }

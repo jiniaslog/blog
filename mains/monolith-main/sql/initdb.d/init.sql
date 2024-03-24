@@ -1,0 +1,2 @@
+CREATE DATABASE IF NOT EXISTS jiniaslog_user;
+CREATE DATABASE IF NOT EXISTS jiniaslog_blog;
